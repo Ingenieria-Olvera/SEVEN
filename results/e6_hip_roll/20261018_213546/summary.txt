@@ -1,0 +1,43 @@
+θ = 30°   mass 11.47 kg   hip height 0.565 m   load per leg 56.2 N
+hip_roll: m8108_100 × 11:1   τ_peak 30.9   τ_cont 10.3 N·m
+
+move                     sim τ    hand hand+off  %cont  %peak   amps  err°
+settle (0°)               0.65    0.00     3.49      6      2    0.7   0.1
+lean ±15°                 3.06    8.22    11.59     30     10    3.3   0.6
+wide +15°                 9.61    8.22    11.59     93     31   10.3   1.7
+narrow −10°              30.68    5.52     8.95    298     99   32.8  13.1
+
+peak over the whole run (incl. ramps): 30.70 N·m, saturated: YES
+body sideways shift at 15° lean: 9.1 cm (≈ h_leg·sin15° = 12.6 cm), body roll 5.2°
+  (not a true parallelogram: each wheel sits outboard of its leg, so tilting both legs raises
+   one wheel and lowers the other relative to the hips → the body rolls a few degrees too)
+track at narrow −10°: 15.4 cm
+track at narrow −15°: 7.1 cm
+hand = F·h·sinφ (CLAUDE.md §2); hand+off = F·(d·cosφ + h·sinφ), d = wheel offset from hip.
+Both assume each wheel carries half the weight and can slide sideways freely. In the sim the
+outer wheel takes most of the load almost under its hip (lean is cheaper than the hand calc),
+and stance changes must drag the loaded wheels sideways: friction ≈ μ·F·h, with μ = contact.
+wheel_friction[0] (ESTIMATE). Narrow/wide numbers are mostly that scrub, so change stance slowly
+or while a leg is unloaded.
+
+θ = 55°   mass 11.47 kg   hip height 0.401 m   load per leg 56.2 N
+hip_roll: m8108_100 × 11:1   τ_peak 30.9   τ_cont 10.3 N·m
+
+move                     sim τ    hand hand+off  %cont  %peak   amps  err°
+settle (0°)               1.13    0.00     3.49     11      4    1.2   0.2
+lean ±15°                 4.45    5.84     9.21     43     14    4.8   0.9
+wide +15°                 9.07    5.84     9.21     88     29    9.7   2.0
+narrow −10°              16.61    3.92     7.35    161     54   17.8   3.3
+
+peak over the whole run (incl. ramps): 24.53 N·m, saturated: no
+body sideways shift at 15° lean: 6.5 cm (≈ h_leg·sin15° = 8.3 cm), body roll 4.9°
+  (not a true parallelogram: each wheel sits outboard of its leg, so tilting both legs raises
+   one wheel and lowers the other relative to the hips → the body rolls a few degrees too)
+track at narrow −10°: 21.0 cm
+track at narrow −15°: 15.6 cm
+hand = F·h·sinφ (CLAUDE.md §2); hand+off = F·(d·cosφ + h·sinφ), d = wheel offset from hip.
+Both assume each wheel carries half the weight and can slide sideways freely. In the sim the
+outer wheel takes most of the load almost under its hip (lean is cheaper than the hand calc),
+and stance changes must drag the loaded wheels sideways: friction ≈ μ·F·h, with μ = contact.
+wheel_friction[0] (ESTIMATE). Narrow/wide numbers are mostly that scrub, so change stance slowly
+or while a leg is unloaded.

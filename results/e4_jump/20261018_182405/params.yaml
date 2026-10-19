@@ -1,0 +1,84 @@
+# The 7 / V2 sizing sim: every tunable lives here. Scripts read this file;
+# a sweep should never require editing code.
+# Units: SI everywhere (m, kg, s, N·m, rad). Anything marked ESTIMATE is a guess
+# to be replaced with measured/datasheet values.
+
+robot:
+  mass_scale: 1.0             # multiply all masses; sweep 0.85–1.35 for 10–16 kg
+  link_femur: 0.280
+  link_shin: 0.280
+  wheel_radius: 0.080
+  wheel_width: 0.040
+  track: 0.300
+  body_size: [0.270, 0.380, 0.310]   # x (front–back), y (side), z
+  stand_theta_deg: 30         # thigh angle from vertical at stand (hip height = 2·L·cos θ)
+  spring_frac: 0.30           # fraction of body weight carried by knee springs at stand
+  # Geometry of where things attach (body frame: origin at body-box centre,
+  # x forward, y left, z up). Sketch these from CAD to replace the guesses.
+  hip_x: 0.000                # hip pitch axis, front-back offset from body centre. ESTIMATE
+  hip_z: -0.100               # hip pitch axis height rel. body centre (puts body bottom ~5 cm above hip). ESTIMATE
+  hip_roll_y: 0.100           # hip-roll axis lateral offset (pitch axis sits at y = track/2). ESTIMATE
+  neck_length: 0.060          # body top → head-tilt axis. ESTIMATE
+  head_size: [0.200, 0.250, 0.150]   # x, y, z. ESTIMATE (eyes end up ≈ 0.95 m)
+  eye_radius: 0.030           # visual only. ESTIMATE
+  battery_z: -0.080           # battery height in body (low = more stable). ESTIMATE
+  neck_frac: 0.35             # fraction of `head` mass that is the neck pan stage. ESTIMATE
+  joint_range_deg:            # soft stops for the sim
+    hip_roll: [-30, 30]
+    hip_pitch: [-120, 60]
+    knee: [0, 150]            # 0 = straight leg, positive = knee bends forward
+    neck_pan: [-90, 90]
+    head_tilt: [-45, 45]
+  masses:                     # kg, see CLAUDE.md section 3 (all ESTIMATE until weighed)
+    leg_actuator: 0.65        # ESTIMATE
+    wheel_actuator: 0.33
+    wheel: 0.30               # ESTIMATE
+    femur: 0.25               # ESTIMATE
+    shin: 0.25                # ESTIMATE
+    hip_cradle: 0.30          # ESTIMATE
+    body_shell: 1.50          # ESTIMATE
+    battery: 0.70
+    electronics: 0.80         # ESTIMATE
+    head: 1.20                # ESTIMATE
+    misc: 0.80                # ESTIMATE
+
+electrical:
+  bus_voltage: 22.2           # 6S nominal; sweep 21–25
+
+motors:
+  m5010_340:  {kv: 340, R: 0.27, i_peak: 15, i_cont: 5,  J_rotor: 2.0e-5}   # J ESTIMATE
+  m8108_100:  {kv: 100, R: 0.10, i_peak: 22, i_cont: 8,  J_rotor: 1.2e-4}   # R, i, J ESTIMATE
+  m6215_170:  {kv: 170, R: 0.10, i_peak: 35, i_cont: 12, J_rotor: 6.0e-5}   # R, i, J ESTIMATE
+  mbig_80:    {kv: 80,  R: 0.08, i_peak: 40, i_cont: 15, J_rotor: 3.0e-4}   # placeholder, all ESTIMATE
+
+actuators:                    # which motor + ratio + efficiency on each joint
+  hip_roll:  {motor: m8108_100, ratio: 11, eta: 0.85, damping: 0.05, frictionloss: 0.10}  # damping/friction ESTIMATE
+  hip_pitch: {motor: m8108_100, ratio: 11, eta: 0.85, damping: 0.05, frictionloss: 0.10}  # damping/friction ESTIMATE
+  knee:      {motor: m8108_100, ratio: 11, eta: 0.85, damping: 0.05, frictionloss: 0.10}  # damping/friction ESTIMATE
+  wheel:     {motor: m5010_340, ratio: 6,  eta: 0.90, damping: 0.01, frictionloss: 0.02}  # damping/friction ESTIMATE
+  neck_pan:  {motor: m5010_340, ratio: 6,  eta: 0.90, damping: 0.02, frictionloss: 0.02}  # low priority, ESTIMATE
+  head_tilt: {motor: m5010_340, ratio: 6,  eta: 0.90, damping: 0.02, frictionloss: 0.02}  # low priority, ESTIMATE
+
+contact:
+  wheel_friction: [1.0, 0.005, 0.0001]   # sliding, torsional, rolling. ESTIMATE
+  floor: plane
+
+sim:
+  timestep: 0.001
+  control_hz: 500
+
+jump:                         # sim/experiments/e4_jump.py
+  base: vertical              # vertical = test rig (slides up/down, can't tip); free = no rig (will likely tip)
+  crouch_deg: 60              # θ at the bottom of the crouch (stand is stand_theta_deg)
+  extend_deg: 5               # push-off target θ (near-straight leg)
+  tuck_deg: 60                # θ in flight: pulls the wheels up for clearance
+  land_deg: 30                # θ the legs aim for on landing
+  t_settle: 0.5               # s, hold stand before starting
+  t_crouch: 1.0               # s, time to sink into the crouch
+  t_hold: 0.3                 # s, pause at the bottom
+  t_total: 3.5                # s, whole experiment
+  gains:                      # PD gains per phase [kp N·m/rad, kd N·m·s/rad]
+    pose: [100, 3]            # stand / crouch / tuck
+    push: [800, 4]            # knee during push: high kp = ask for more than the motor has → max effort
+    push_hip: [300, 6]        # hip during push: steers (keeps wheel under hip), doesn't lift
+    land: [60, 4]             # soft = compliant landing

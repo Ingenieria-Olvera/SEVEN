@@ -1,0 +1,7 @@
+# mujoco pinned: on this PC Windows Smart App Control blocks the newest builds
+# (3.16.0's DLLs have no reputation yet). 3.3.0 is allowed. Try newer only if needed.
+mujoco==3.3.0
+numpy>=1.26
+pyyaml>=6.0
+matplotlib>=3.8
+pandas>=2.1

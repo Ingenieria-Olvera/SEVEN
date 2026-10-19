@@ -1,0 +1,11 @@
+mass 11.47 kg (mass_scale 1.0), base = vertical, crouch 60° → extend 5°
+hip_pitch: m8108_100 × 11:1  τ_peak  30.9 N·m  ω0  21.1 rad/s
+knee     : m8108_100 × 11:1  τ_peak  30.1 N·m  ω0  21.1 rad/s
+
+RESULT: takeoff at t=2.006 s, push lasted 0.202 s
+  wheel clearance (lowest wheel bottom above floor):  31.4 cm
+  body rise above standing height:                   12.3 cm
+
+joint        peak cmd  peak τ  sat %  peak ω    ω0  peak A i_peak   (push phase; landing peaks after /)
+hip_pitch_L      16.1    16.1      0     7.2  21.1    17.2     34   / land τ 30.9 N·m
+knee_L         1595.8    30.1    100    17.2  21.1    33.0     34   / land τ 30.1 N·m

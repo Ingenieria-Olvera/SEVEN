@@ -1,0 +1,5 @@
+.venv/
+__pycache__/
+*.pyc
+# per-run CSVs are big and re-creatable; summaries, plots and params snapshots are kept
+results/**/*.csv
